@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parametric Crane Drawing Generator</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header>
+  <h1>Parametric Crane Drawing Generator</h1>
+  <p class="subtitle">Single-girder top-running EOT overhead crane. All dimensions metric.
+  Values marked estimate are rules of thumb, not for manufacture.</p>
+</header>
+
+<main>
+  <section class="panel form-panel" aria-label="Crane inputs">
+    <h2>Crane inputs</h2>
+    <form id="crane-form" novalidate>
+      <div class="field">
+        <label for="name">Design name</label>
+        <input type="text" id="name" name="name" maxlength="80"
+               placeholder="e.g. Workshop Crane 5t" value="Workshop Crane 5t">
+        <p class="error" id="err-name"></p>
+      </div>
+
+      <div class="field">
+        <label for="span_m">Span between runway rails (m): <span class="val" id="val-span_m">20.00</span></label>
+        <div class="slider-row">
+          <input type="range" id="span_m-range" min="5" max="30" step="0.5" value="20">
+          <input type="number" id="span_m" name="span_m" min="5" max="30" step="0.5" value="20">
+        </div>
+        <p class="hint">5 to 30 m</p>
+        <p class="error" id="err-span_m"></p>
+      </div>
+
+      <div class="field">
+        <label for="capacity_t">Capacity, SWL (t): <span class="val" id="val-capacity_t">5.00</span></label>
+        <div class="slider-row">
+          <input type="range" id="capacity_t-range" min="1" max="20" step="0.5" value="5">
+          <input type="number" id="capacity_t" name="capacity_t" min="1" max="20" step="0.5" value="5">
+        </div>
+        <p class="hint">1 to 20 t</p>
+        <p class="error" id="err-capacity_t"></p>
+      </div>
+
+      <div class="field">
+        <label for="lift_height_m">Lift height, floor to hook (m): <span class="val" id="val-lift_height_m">6.00</span></label>
+        <div class="slider-row">
+          <input type="range" id="lift_height_m-range" min="3" max="18" step="0.5" value="6">
+          <input type="number" id="lift_height_m" name="lift_height_m" min="3" max="18" step="0.5" value="6">
+        </div>
+        <p class="hint">3 to 18 m</p>
+        <p class="error" id="err-lift_height_m"></p>
+      </div>
+
+      <div class="field">
+        <label for="trolley_position_m">Trolley position from left rail (m): <span class="val" id="val-trolley_position_m">10.00</span></label>
+        <div class="slider-row">
+          <input type="range" id="trolley_position_m-range" min="1" max="29" step="0.5" value="10">
+          <input type="number" id="trolley_position_m" name="trolley_position_m" min="1" max="29" step="0.5" value="10">
+        </div>
+        <p class="hint">1.0 m to span minus 1.0 m. Leave blank for mid-span.</p>
+        <p class="error" id="err-trolley_position_m"></p>
+      </div>
+
+      <div class="field">
+        <label for="duty_class">Duty class</label>
+        <select id="duty_class" name="duty_class">
+          <option value="A3">A3 (light)</option>
+          <option value="A4" selected>A4 (medium)</option>
+          <option value="A5">A5 (heavy)</option>
+        </select>
+        <p class="error" id="err-duty_class"></p>
+      </div>
+
+      <div class="field">
+        <label for="notes">Notes (optional, max 500 characters)</label>
+        <textarea id="notes" name="notes" rows="3" maxlength="500"></textarea>
+        <p class="error" id="err-notes"></p>
+      </div>
+
+      <div class="buttons">
+        <button type="submit" id="save-btn">Save design</button>
+        <button type="button" id="new-btn">New design</button>
+        <button type="button" id="export-btn">Export SVG</button>
+        <button type="button" id="delete-btn" class="danger" disabled>Delete</button>
+      </div>
+      <p id="loaded-note" class="loaded-note" hidden></p>
+    </form>
+  </section>
+
+  <section class="panel drawing-panel" aria-label="Drawing and derived values">
+    <h2>Drawing</h2>
+    <div id="warnings"></div>
+    <div id="drawing" class="drawing">Loading preview...</div>
+    <h2>Derived values</h2>
+    <p id="deflection-badge" class="badge"></p>
+    <table id="derived-table">
+      <tbody></tbody>
+    </table>
+    <p class="footnote">Beam deflection uses standard Euler-Bernoulli beam theory
+    (E = 200 GPa) for live load only. The L/750 limit is a commonly used
+    crane-girder limit, flagged as typical rather than a standard.
+    Girder depth, headroom, overhang and masses are estimates.</p>
+  </section>
+
+  <aside class="panel saved-panel" aria-label="Saved designs">
+    <h2>Saved designs</h2>
+    <ul id="saved-list"></ul>
+    <p id="saved-empty" class="hint">No saved designs yet.</p>
+  </aside>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="/app.js"></script>
+</body>
+</html>
